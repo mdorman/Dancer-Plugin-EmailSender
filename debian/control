@@ -1,0 +1,28 @@
+Source: dancer-plugin-emailsender
+Section: perl
+Priority: optional
+Maintainer: Michael Alan Dorman <mdorman@ironicdesign.com>
+Build-Depends: debhelper (>= 8),
+ perl
+Build-Depends-Indep: libdancer-perl,
+ libemail-mime-perl,
+ libemail-sender-perl,
+ libemail-simple-perl,
+ libsub-exporter-perl,
+ libtest-compile-perl,
+ libtest-fatal-perl
+Standards-Version: 3.9.3
+Homepage: http://search.cpan.org/dist/Dancer-Plugin-EmailSender/
+
+Package: libdancer-plugin-emailsender-perl
+Architecture: all
+Depends: ${misc:Depends}, ${perl:Depends},
+ libdancer-perl,
+ libemail-mime-perl,
+ libemail-sender-perl,
+ perl-modules
+Description: Easily use Email::Sender from Dancer
+ This plugin makes constructing and sending emails from Dancer
+ applications as simple and flexible as possible.  Since it uses
+ Email::Sender, in many cases, no explicit configuration may be
+ required, though several configuration options are available.
