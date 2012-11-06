@@ -40,9 +40,9 @@ sub header_like ($$$) {
     like ($header, $regex, "Checking header $checking against $regex");
 }
 
-sub with_sent (&) {
-    my ($sub) = @_;
-    if (my $email = shift @{Email::Sender::Simple->default_transport->deliveries}) {
+sub with_sent ($&) {
+    my ($transport, $sub) = @_;
+    if (my $email = shift @{$transport->deliveries}) {
         $sub->($email);
     }
 }
