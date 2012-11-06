@@ -7,7 +7,7 @@ use Dancer::Plugin::EmailSender;
 use Log::Any::Adapter qw{Stderr};
 use Test::Fatal;
 use Test::More import => ['!pass'];
-use t::Util qw{body_is body_like header_is header_like with_email};
+use t::Util qw{body_is envelope_is header_is with_sent};
 
 setting logger => 'LogAny';
 
@@ -19,8 +19,11 @@ like (exception {emailsender {'envelope-from' => 'mdorman@ironicdesign.com'}}, q
 
 ok (emailsender ({from => 'mdorman@ironicdesign.com', to => ['mdorman@ironicdesign.com']}), 'Test for successful transmission');
 
-with_email {
-    my ($email) = @_;
+with_sent {
+    my ($sent) = @_;
+    my $email = $sent->{email};
+    envelope_is $sent, 'from', 'mdorman@ironicdesign.com';
+    envelope_is $sent, 'to', ['mdorman@ironicdesign.com'];
     body_is $email, '';
     header_is $email, 'from', 'mdorman@ironicdesign.com';
     header_is $email, 'to', 'mdorman@ironicdesign.com';
@@ -28,11 +31,26 @@ with_email {
 
 ok (emailsender ({from => 'mdorman@ironicdesign.com', to => ['mdorman@ironicdesign.com'], body => 'This is a trivial body.'}), 'Test for successful transmission');
 
-with_email {
-    my ($email) = @_;
+with_sent {
+    my ($sent) = @_;
+    my $email = $sent->{email};
+    envelope_is $sent, 'from', 'mdorman@ironicdesign.com';
+    envelope_is $sent, 'to', ['mdorman@ironicdesign.com'];
     body_is $email, 'This is a trivial body.';
     header_is $email, 'from', 'mdorman@ironicdesign.com';
     header_is $email, 'to', 'mdorman@ironicdesign.com';
+};
+
+ok (emailsender ({'envelope-from' => 'adorman@ironicdesign.com', from => 'mdorman@ironicdesign.com', to => ['cdorman@ironicdesign.com'], body => 'This is a trivial body.'}), 'Test for successful transmission');
+
+with_sent {
+    my ($sent) = @_;
+    my $email = $sent->{email};
+    envelope_is $sent, 'from', 'adorman@ironicdesign.com';
+    envelope_is $sent, 'to', ['cdorman@ironicdesign.com'];
+    body_is $email, 'This is a trivial body.';
+    header_is $email, 'from', 'mdorman@ironicdesign.com';
+    header_is $email, 'to', 'cdorman@ironicdesign.com';
 };
 
 done_testing;
