@@ -7,7 +7,6 @@ use Dancer::Plugin::EmailSender;
 use Email::Simple;
 use Email::Sender::Transport::Test;
 use IO::File;
-use Log::Any::Adapter qw{Stderr};
 use Test::Fatal;
 use Test::More import => ['!pass'];
 use t::Util qw{body_is envelope_is header_is with_sent};
