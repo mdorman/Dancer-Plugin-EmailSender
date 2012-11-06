@@ -1,7 +1,5 @@
 package t::Util;
 
-BEGIN {$ENV{EMAIL_SENDER_TRANSPORT} = 'Test'};
-
 use Email::Sender::Simple qw{};
 use Test::More;
 use Sub::Exporter -setup => {exports => [qw{body_is body_like envelope_is envelope_like header_is header_like with_sent}]};
