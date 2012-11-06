@@ -1,6 +1,6 @@
 package Dancer::Plugin::EmailSender;
 {
-  $Dancer::Plugin::EmailSender::VERSION = '0.001';
+  $Dancer::Plugin::EmailSender::VERSION = '0.002';
 }
 #ABSTRACT: Easily use Email::Sender from Dancer
 
@@ -67,7 +67,7 @@ Dancer::Plugin::EmailSender - Easily use Email::Sender from Dancer
 
 =head1 VERSION
 
-version 0.001
+version 0.002
 
 =head1 SYNOPSIS
 
