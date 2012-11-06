@@ -13,7 +13,6 @@ use t::Util qw{body_is envelope_is header_is with_sent};
 
 my $transport = Email::Sender::Transport::Test->new;
 
-setting logger => 'LogAny';
 setting plugins => {EmailSender => {headers => {'X-Foo' => 'Bar'},
                                     transport => $transport}};
 
