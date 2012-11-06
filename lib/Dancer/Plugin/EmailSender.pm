@@ -31,24 +31,30 @@ use warnings;
 
 This plugin makes constructing and sending emails from L<Dancer>
 applications as simple and flexible as possible.  Since it uses
-L<Email::Sender>, in many cases, no explicit configuration may be
+L<Email::Sender|Email::Sender>, in many cases, no explicit configuration may be
 required, though several configuration options are available.
 
 =head1 CONFIGURATION
+
+You can configure a number of defaults for the plugin in the your
+C<config.yml> or appropriate C<environment> config file.  Anything
+that you configure in this way can be overridden at the time
+C<sendemail> is called.
 
 =head2 Transport
 
 C<Dancer::Plugin::EmailSender> allows you to choose and configure a
 particular transport, should you not wish to use the one that
 C<Email::Sender> would choose by default (as discussed in
-L<Email::Sender::Manual::QuickStart/Picking_a_Transport>)
+L<the Email::Sender manual|Email::Sender::Manual::QuickStart/Picking_a_Transport>).
 
 Simply add a C<transport> key, pointing to a set of options that must
-include a C<class> entry stating the class to be used for the
-transport, while any additional entries will be used as parameters for
-instantiating the transport:
+include a C<class> entry (stating the name of the subclass of
+L<Email::Sender::Transport:*|Email::Sender::Transport> to be used for the transport), while any
+additional entries will be used as parameters for instantiating the
+transport:
 
-For example, to sending mail using SMTPS via Gmail:
+For example, to send mail using SMTPS via Gmail:
 
     plugins:
       EmailSender:
@@ -71,9 +77,7 @@ path to the sendmail program:
 
 =head2 Headers
 
-You may provide a set of default headers in the configuration.  These
-I<will> be overridden by any headers you include in the invocation of
-C<sendemail>:
+You may also provide a set of default headers in the configuration:
 
     plugins:
       EmailSender:
@@ -82,33 +86,27 @@ C<sendemail>:
           X-Mailer: 'Degronkulator 3.14'
           X-Accept-Language: 'en'
 
-=method sendemail
+=head1 sendemail
 
 This function will optionally construct, and then send, an email.  It
 takes a hashref of parameters.  They can be divided up as to their
 purpose:
 
-=head3 Specifying the content to send
+=head2 Specifying the content to send
 
 To specify the content of the email to send, you may either:
 
-=over 4
-
-=item Provide a complete email to be sent
+=head3 Provide a complete email to be sent
 
 If a completed email (in a format that is acceptable to
 C<Email::Abstract> is provided in an C<email> parameter, that is the
-email that will be used.
+email that will be sent.
 
-=item Provide parameters to construct an email
+=head3 Provide parameters to construct an email
 
 These parameters include:
 
 =over
-
-=item headers
-
-A hashref of additional headers to add to the email.
 
 =item from
 
@@ -118,34 +116,52 @@ The address from which the email should be sent.
 
 An arrayref od address to which the email should be sent.
 
-=back
+=item headers
+
+A hashref of additional headers to add to the email.
+
+=item body
+
+The body of the actual email to be sent.
 
 =back
 
-=head3 To specify how the email is sent
+=head2 Specifying how the email is sent
 
-In addition, you may optionally specify the transport as well as the
-sending and receiving addresses for the SMTP transaction, allowing
-them to be different from the values in the headers of your email.  To
-do this you can include either or both of:
+You may optionally specify the transport here, overriding any defaults
+or settings in your application configuration.  All configuration will
+appear under a C<transport> key.
 
-=over 4
+From there you can specify the transport to use two different ways.
 
-=item envelope-from
+=head3 Provide a set of construction parameters
+
+The parameters you hand in will be used just as if they had appeared
+in the configuration to create a new transport, which will then be
+used for this transaction.
+
+=head3 Provide a constructed Transport
+
+You may construct your own transport and simply hand that in to the
+C<sendemail> routine.
+
+=head2 Specifying the sending and retrieving addresses
+
+You may independently set the sending and receiving addresses for the
+SMTP transaction, allowing them to be different from the values in the
+headers of your email.  To do this you can include either or both of:
+
+=head3 envelope-from
 
 This is the address that will be used as the sending address during
 the SMTP transaction.
 
-=item envelope-to
+=head3 envelope-to
 
 This is the list of addresse that will be used as recipients during
 the SMTP transaction.
 
-=item transport
-
-This parameter should contain a hashref that corresponds to the
-
-=back
+=head2 Error Handling
 
 An exception will be thrown if sending the email fails, so plan
 appropriately.
@@ -193,21 +209,13 @@ register_plugin;
 
 =head1 AUTHOR
 
-Michael Alan Dorman <mdorman@ironicdesign.com>, though significant
-inspiration for the interface came from C<Dancer::Plugin::Email>,
-which was written by:
+Michael Alan Dorman <mdorman@ironicdesign.com>
 
-=over 4
-
-=item *
-
-Naveed Massjouni <naveedm9@gmail.com>
-
-=item *
-
-Al Newkirk <awncorp@cpan.org>
-
-=back
+Although I started out just wanting to fix things in
+L<Dancer::Plugin::Email>, I ended up rewriting everything.  Still,
+Naveed Massjouni <naveedm9@gmail.com> and Al Newkirk
+<awncorp@cpan.org> deserve credit for writing
+C<Dancer::Plugin::Email>.
 
 =cut
 
