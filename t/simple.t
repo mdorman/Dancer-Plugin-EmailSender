@@ -22,7 +22,7 @@ like (exception {sendemail {}}, qr/^You must tell me who the email is from/, 'Te
 like (exception {sendemail {from => 'mdorman@ironicdesign.com'}}, qr/^You must tell me to whom to send the email/, 'Test for failure with missing to');
 like (exception {sendemail {'envelope-from' => 'mdorman@ironicdesign.com'}}, qr/^You must tell me to whom to send the email/, 'Test for failure with missing to');
 
-ok (sendemail ({from => 'mdorman@ironicdesign.com', to => ['mdorman@ironicdesign.com']}), 'Test sending with a null body');
+ok (sendemail ({headers => {Subject => 'This is our subject'}, from => 'mdorman@ironicdesign.com', to => ['mdorman@ironicdesign.com']}), 'Test sending with a null body');
 
 with_sent $transport, sub {
     my ($sent) = @_;
@@ -30,6 +30,7 @@ with_sent $transport, sub {
     envelope_is $sent, 'to', ['mdorman@ironicdesign.com'];
     my $email = $sent->{email};
     body_is $email, '';
+    header_is $email, 'subject', 'This is our subject';
     header_is $email, 'x-foo', 'Bar';
     header_is $email, 'from', 'mdorman@ironicdesign.com';
     header_is $email, 'to', 'mdorman@ironicdesign.com';
